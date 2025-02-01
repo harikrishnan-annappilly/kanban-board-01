@@ -5,6 +5,7 @@ from models.base import BaseModel
 class StatusModel(BaseModel):
     title = db.Column(db.String, nullable=False)
     sort_key = db.Column(db.Integer, nullable=False, default=lambda: StatusModel.query.count())
+    tasks = db.relationship("TaskModel", backref="status", cascade="all, delete-orphan")
 
     def json(self) -> dict:
         return {

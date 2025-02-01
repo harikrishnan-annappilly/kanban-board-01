@@ -3,6 +3,7 @@ from flask_restful import Api
 
 from db import db
 from resources.status import StatusResource, SortedStatusResource, SingleStatusResource, SortStatusResource
+from resources.task import TasksResource, SortedTasksResource, SingleTaskResource, SortTaskResource
 
 app = Flask(__name__)
 
@@ -20,6 +21,11 @@ api.add_resource(StatusResource, "/status")
 api.add_resource(SortStatusResource, "/sort-status")
 api.add_resource(SortedStatusResource, "/sorted-status")
 api.add_resource(SingleStatusResource, "/single-status/<int:status_id>")
+
+api.add_resource(TasksResource, "/tasks")
+api.add_resource(SortTaskResource, "/sort-tasks")
+api.add_resource(SortedTasksResource, "/sorted-tasks")
+api.add_resource(SingleTaskResource, "/task/<int:task_id>")
 
 
 @app.before_request
