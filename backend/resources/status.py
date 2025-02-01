@@ -30,7 +30,7 @@ class SingleStatusResource(Resource):
         payload = parser.parse_args()
 
         if not status:
-            return {"message": "entry not found"}, 404
+            return {"message": f"not found, status id: {status_id}"}, 404
         status.title = payload["title"]
         status.save()
         return status.json(), 200
@@ -38,23 +38,25 @@ class SingleStatusResource(Resource):
     def delete(self, status_id):
         status = StatusModel.find_one(id=status_id)
         if not status:
-            return {"message": "entry not found"}, 404
+            return {"message": f"not found, status id: {status_id}"}, 404
         status.delete()
-        return {"message": f"entry with if {status_id} delete"}, 200
+        return {"message": f"status deleted, status id: {status_id}"}, 200
 
 
 class SortStatusResource(Resource):
     def put(self):
-        payload = request.get_json()
+        added = set()
+        status_ids = [status_id for status_id in request.get_json() if not (status_id in added or added.add(status_id))]
         status_list = []
 
-        if StatusModel.find_count() != len(payload):
-            return {"message": "not all items passes"}, 400
+        count = StatusModel.find_count()
+        if count != len(status_ids):
+            return {"message": f"provide {count} unique status id"}, 400
 
-        for status_id in payload:
+        for status_id in status_ids:
             status = StatusModel.find_one(id=status_id)
             if not status:
-                return {"message": "invalid items passed"}, 400
+                return {"message": f"not found, status id: {staticmethod}"}, 404
             status.sort_key = len(status_list)
             status_list.append(status)
         StatusModel.transaction(status_list)
