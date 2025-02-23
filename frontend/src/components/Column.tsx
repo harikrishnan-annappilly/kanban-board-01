@@ -1,26 +1,40 @@
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import React from "react";
 
 interface PropType {
+  id: string;
+  type: string;
   title: string;
   color: string;
   children: React.ReactNode;
 }
 
 const Column = (props: PropType) => {
-  const { title, color, children } = props;
+  const { id, type, title, color, children } = props;
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({ id, data: { type } });
+  const style = { transition, transform: CSS.Transform.toString(transform) };
 
   return (
     <div
-      className={`border border-gray-400 min-w-52 w-full max-w-96 flex flex-col rounded ${`${
-        color.split("-")[1]
-      }-scroll`}`}
+      ref={setNodeRef}
+      style={style}
+      className={`border border-gray-400 h-full min-w-52 w-full max-w-96 flex flex-col rounded ${
+        isDragging ? "opacity-30" : ""
+      } ${`${color.split("-")[1]}-scroll`}`}
     >
       {/* Column Heading */}
-      <div className={`text-center text-2xl p-3 font-semibold rounded-t border-b border-gray-400 ${color}`}>
+      <div
+        {...attributes}
+        {...listeners}
+        className={`text-center text-2xl p-3 font-semibold rounded-t border-b border-gray-400 ${color}`}
+      >
         {title}
       </div>
       {/* Column Body */}
-      <div className="grow flex flex-col p-3 gap-3 overflow-y-auto bg-white rounded-b">{children}</div>
+      <div className="grow flex flex-col p-3 gap-3 overflow-y-auto overflow-x-hidden bg-white rounded-b">
+        {children}
+      </div>
     </div>
   );
 };
