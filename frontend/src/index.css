@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+:root {
+  --scrollbar-width: 6px;
+}
+
+::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-500;
+  border-radius: var(--scrollbar-width);
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+.red-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-red-500;
+}
+.red-scroll > ::-webkit-scrollbar-track {
+  @apply bg-red-100;
+}
+.orange-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-orange-500;
+}
+.orange-scroll > ::-webkit-scrollbar-track {
+  @apply bg-orange-100;
+}
+.amber-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-amber-500;
+}
+.amber-scroll > ::-webkit-scrollbar-track {
+  @apply bg-amber-100;
+}
+.yellow-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-yellow-500;
+}
+.yellow-scroll > ::-webkit-scrollbar-track {
+  @apply bg-yellow-100;
+}
+.lime-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-lime-500;
+}
+.lime-scroll > ::-webkit-scrollbar-track {
+  @apply bg-lime-100;
+}
+.green-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-green-500;
+}
+.green-scroll > ::-webkit-scrollbar-track {
+  @apply bg-green-100;
+}
+.emerald-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-emerald-500;
+}
+.emerald-scroll > ::-webkit-scrollbar-track {
+  @apply bg-emerald-100;
+}
+.teal-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-teal-500;
+}
+.teal-scroll > ::-webkit-scrollbar-track {
+  @apply bg-teal-100;
+}
+.cyan-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-cyan-500;
+}
+.cyan-scroll > ::-webkit-scrollbar-track {
+  @apply bg-cyan-100;
+}
+.sky-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-sky-500;
+}
+.sky-scroll > ::-webkit-scrollbar-track {
+  @apply bg-sky-100;
+}
+.blue-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-blue-500;
+}
+.blue-scroll > ::-webkit-scrollbar-track {
+  @apply bg-blue-100;
+}
+.indigo-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-indigo-500;
+}
+.indigo-scroll > ::-webkit-scrollbar-track {
+  @apply bg-indigo-100;
+}
+.violet-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-violet-500;
+}
+.violet-scroll > ::-webkit-scrollbar-track {
+  @apply bg-violet-100;
+}
+.purple-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-purple-500;
+}
+.purple-scroll > ::-webkit-scrollbar-track {
+  @apply bg-purple-100;
+}
+.fuchsia-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-fuchsia-500;
+}
+.fuchsia-scroll > ::-webkit-scrollbar-track {
+  @apply bg-fuchsia-100;
+}
+.pink-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-pink-500;
+}
+.pink-scroll > ::-webkit-scrollbar-track {
+  @apply bg-pink-100;
+}
+.rose-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-rose-500;
+}
+.rose-scroll > ::-webkit-scrollbar-track {
+  @apply bg-rose-100;
+}
+.slate-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-slate-500;
+}
+.slate-scroll > ::-webkit-scrollbar-track {
+  @apply bg-slate-100;
+}
+.gray-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-gray-500;
+}
+.gray-scroll > ::-webkit-scrollbar-track {
+  @apply bg-gray-200;
+}
+.zinc-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-zinc-500;
+}
+.zinc-scroll > ::-webkit-scrollbar-track {
+  @apply bg-zinc-100;
+}
+.neutral-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-neutral-500;
+}
+.neutral-scroll > ::-webkit-scrollbar-track {
+  @apply bg-neutral-100;
+}
+.stone-scroll > ::-webkit-scrollbar-thumb {
+  @apply bg-stone-500;
+}
+.stone-scroll > ::-webkit-scrollbar-track {
+  @apply bg-stone-100;
+}
