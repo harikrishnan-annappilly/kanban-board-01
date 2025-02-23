@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import Card from "./components/Card";
+import Column from "./components/Column";
 
 type ColumnType = {
   id: string;
@@ -9,8 +11,11 @@ type ColumnType = {
 type ItemsType = {
   id: string;
   title: string;
+  content: string;
   columnId: string;
 };
+
+const dummyContent = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores fugit nihil rem.";
 
 const defaultColumns = [
   { id: "column1", title: "Todo", color: "bg-sky-300" },
@@ -20,11 +25,11 @@ const defaultColumns = [
 ];
 
 const defaultItems = [
-  { id: "item1", title: "Item 1", columnId: "column1" },
-  { id: "item2", title: "Item 2", columnId: "column1" },
-  { id: "item3", title: "Item 3", columnId: "column1" },
-  { id: "item4", title: "Item 4", columnId: "column2" },
-  { id: "item5", title: "Item 4", columnId: "column3" },
+  { id: "item1", title: "Item 1", columnId: "column1", content: dummyContent },
+  { id: "item2", title: "Item 2", columnId: "column1", content: dummyContent },
+  { id: "item3", title: "Item 3", columnId: "column1", content: dummyContent },
+  { id: "item4", title: "Item 4", columnId: "column2", content: dummyContent },
+  { id: "item5", title: "Item 4", columnId: "column3", content: dummyContent },
 ];
 
 const App = () => {
@@ -63,43 +68,13 @@ const App = () => {
       <div className="bg-gray-200 grow flex p-4 gap-4 overflow-x-auto ">
         {/* Columns Inside Board */}
         {columns.map((column) => (
-          <div
-            key={column.id}
-            className={`border border-gray-400 min-w-52 w-full max-w-96 flex flex-col rounded ${`${
-              getColor(column.color).split("-")[1]
-            }-scroll`}`}
-          >
-            {/* Column Heading */}
-            <div
-              className={`text-center text-2xl p-3 font-semibold rounded-t border-b border-gray-400 ${getColor(
-                column.color
-              )}`}
-            >
-              {column.title}
-            </div>
-            {/* Column Body */}
-            <div className="grow flex flex-col p-3 gap-3 overflow-y-auto bg-white rounded-b">
-              {items
-                .filter((fItem) => fItem.columnId === column.id)
-                .map((item) => (
-                  <div key={item.id} className="rounded text-center border border-gray-400 shadow">
-                    {/* Card Heading */}
-                    <div
-                      className={`rounded-t font-semibold text-lg p-1 border-b border-gray-400 ${getColor(
-                        column.color
-                      )}`}
-                    >
-                      {item.title}
-                    </div>
-                    {/* Card Body */}
-                    <div className="p-1 bg-white rounded-b text-sm">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt officia nam impedit accusamus
-                      animi in quaerat tempora laboriosam nobis debitis ipsa error.
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
+          <Column key={column.id} title={column.title} color={getColor(column.color)}>
+            {items
+              .filter((fItem) => fItem.columnId === column.id)
+              .map((item) => (
+                <Card key={item.id} title={item.title} color={getColor(column.color)} content={item.content} />
+              ))}
+          </Column>
         ))}
       </div>
     </div>
