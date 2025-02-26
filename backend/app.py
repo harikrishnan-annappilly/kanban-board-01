@@ -1,4 +1,5 @@
 from flask import Flask, Blueprint
+from flask_cors import CORS
 from flask_restful import Api
 
 from db import db
@@ -6,6 +7,7 @@ from resources.status import StatusResource, SortedStatusResource, SingleStatusR
 from resources.task import TasksResource, SortedTasksResource, SingleTaskResource, SortTaskResource
 
 app = Flask(__name__)
+cors = CORS(app)
 
 app.secret_key = "key"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
