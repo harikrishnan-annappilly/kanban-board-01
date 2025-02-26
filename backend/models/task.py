@@ -11,6 +11,6 @@ class TaskModel(BaseModel):
         return {
             "id": self.id,
             "title": self.title,
-            "sort_key": self.sort_key,
-            "status_id": self.status.json(),
+            "content": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores fugit nihil rem.",
+            "columnId": self.status_id,
         }

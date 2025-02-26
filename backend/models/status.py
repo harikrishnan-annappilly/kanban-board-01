@@ -1,5 +1,6 @@
 from db import db
 from models.base import BaseModel
+from utilities.colors import get_color
 
 
 class StatusModel(BaseModel):
@@ -11,5 +12,5 @@ class StatusModel(BaseModel):
         return {
             "id": self.id,
             "title": self.title,
-            "sort_key": self.sort_key,
+            "color": get_color(),
         }
