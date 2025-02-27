@@ -4,9 +4,9 @@ from models.status import StatusModel
 from models.task import TaskModel
 
 status_data = [
-    {"title": "Todo"},
-    {"title": "Doing"},
-    {"title": "Done"},
+    {"title": "Todo", "color": "sky"},
+    {"title": "Doing", "color": "yellow"},
+    {"title": "Done", "color": "emerald"},
 ]
 
 task_data = [

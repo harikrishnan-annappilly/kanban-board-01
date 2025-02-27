@@ -15,6 +15,7 @@ class StatusResource(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument("title", required=True, type=str)
+        parser.add_argument("color", required=True, type=str)
         payload = parser.parse_args()
 
         status = StatusModel(**payload)
@@ -27,11 +28,13 @@ class SingleStatusResource(Resource):
         status = StatusModel.find_one(id=status_id)
         parser = reqparse.RequestParser()
         parser.add_argument("title", required=True, type=str)
+        parser.add_argument("color", required=True, type=str)
         payload = parser.parse_args()
 
         if not status:
             return {"message": f"not found, status id: {status_id}"}, 404
         status.title = payload["title"]
+        status.color = payload["color"]
         status.save()
         return status.json(), 200
 
