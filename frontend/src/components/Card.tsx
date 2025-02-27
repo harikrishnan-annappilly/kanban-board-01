@@ -24,7 +24,7 @@ const Card = (props: PropType) => {
       <div
         {...attributes}
         {...listeners}
-        className={`rounded-t font-semibold text-lg p-1 border-b border-gray-400 ${color}`}
+        className={`rounded-t font-semibold text-lg p-1 border-b border-gray-400 bg-${color}-300`}
       >
         {title}
       </div>

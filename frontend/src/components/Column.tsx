@@ -27,7 +27,7 @@ const Column = (props: PropType) => {
       <div
         {...attributes}
         {...listeners}
-        className={`text-center text-2xl p-3 font-semibold rounded-t border-b border-gray-400 ${color}`}
+        className={`text-center text-2xl p-3 font-semibold rounded-t border-b border-gray-400 bg-${color}-300`}
       >
         {title}
       </div>
