@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+.sortable {
+  cursor: grab;
+}
+
+.sorting {
+  cursor: grabbing;
+}
+
 :root {
   --scrollbar-width: 6px;
 }

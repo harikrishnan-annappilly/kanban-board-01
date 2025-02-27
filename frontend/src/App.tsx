@@ -1,59 +1,52 @@
 import { useEffect, useState } from "react";
-import Card from "./components/Card";
 import Column from "./components/Column";
+import Card from "./components/Card";
 import { closestCenter, DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
-
-type ColumnType = {
-  id: string;
-  title: string;
-  color?: string;
-};
-
-type ItemsType = {
-  id: string;
-  title: string;
-  content: string;
-  columnId: string;
-};
-
-const dummyContent = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores fugit nihil rem.";
-
-const defaultColumns = [
-  { id: "column1", title: "Todo", color: "bg-sky-300" },
-  { id: "column2", title: "Doing", color: "bg-yellow-300" },
-  { id: "column3", title: "Review", color: "bg-purple-300" },
-  { id: "column4", title: "Done", color: "bg-green-300" },
-];
-
-const defaultItems = [
-  { id: "item1", title: "Item 1", columnId: "column1", content: dummyContent },
-  { id: "item2", title: "Item 2", columnId: "column1", content: dummyContent },
-  { id: "item3", title: "Item 3", columnId: "column1", content: dummyContent },
-  { id: "item4", title: "Item 4", columnId: "column2", content: dummyContent },
-  { id: "item5", title: "Item 5", columnId: "column3", content: dummyContent },
-];
+import http from "./services/http";
+import { ColumnType, ItemsType } from "./types/KanbanBoard";
 
 const App = () => {
+  const columnIdentifierKeyword = "status";
+  const taskIdentifierKeyword = "task";
+
   const [columns, setColumns] = useState<ColumnType[]>([]);
   const [items, setItems] = useState<ItemsType[]>([]);
   const [active, setActive] = useState<{ id: string | null; type: string | null }>({ id: null, type: null });
 
   useEffect(() => {
-    const fetchColumn = setTimeout(() => {
-      setColumns(defaultColumns);
-      console.log("Column fetched");
-    }, 200);
+    const columnsAbortController = new AbortController();
+    const itemsAbortController = new AbortController();
 
-    const fetchItems = setTimeout(() => {
-      setItems(defaultItems);
-      console.log("Items fetched");
-    }, 400);
+    http
+      .get("/sorted-tasks", { signal: itemsAbortController.signal })
+      .then((response) =>
+        setItems(
+          response.data.map((item: ItemsType) => ({
+            ...item,
+            id: `${taskIdentifierKeyword}${item.id}`,
+            columnId: `${columnIdentifierKeyword}${item.columnId}`,
+          }))
+        )
+      )
+      .catch((err) => {
+        if (err.code === "ERR_CANCELED") return;
+        console.log(err);
+      });
+
+    http
+      .get("/sorted-status", { signal: columnsAbortController.signal })
+      .then((response) =>
+        setColumns(response.data.map((col: ColumnType) => ({ ...col, id: `${columnIdentifierKeyword}${col.id}` })))
+      )
+      .catch((err) => {
+        if (err.code === "ERR_CANCELED") return;
+        console.log(err);
+      });
 
     const cancelFetch = () => {
-      clearInterval(fetchColumn);
-      clearInterval(fetchItems);
-      console.warn("Cancelled fetch");
+      columnsAbortController.abort();
+      itemsAbortController.abort();
     };
 
     return () => cancelFetch();
@@ -62,7 +55,7 @@ const App = () => {
   const getColor = (color: string | undefined) => (color ? color : "bg-gray-300");
 
   const getActiveData = (): { column: ColumnType; item: ItemsType } => {
-    if (active.type === "column")
+    if (active.type === columnIdentifierKeyword)
       return {
         column: columns.find((col) => col.id === active.id) || { id: "", title: "NA" },
         item: { id: "", title: "NA", content: "NA", columnId: "" },
@@ -85,18 +78,26 @@ const App = () => {
 
     const { active, over } = event;
     if (!over) return;
-    if (active.data.current?.type === "column") {
+    if (active.data.current?.type === columnIdentifierKeyword) {
       const currentPosition = columns.findIndex((column) => column.id === active.id);
       const targetPosition = columns.findIndex((column) => column.id === over.id);
       if (currentPosition === targetPosition) return;
       setColumns((prev) => arrayMove(prev, currentPosition, targetPosition));
       console.log("make api call column sort");
+      const columnIds = arrayMove(columns, currentPosition, targetPosition).map((col) =>
+        Number.parseInt(col.id.replace(columnIdentifierKeyword, ""))
+      );
+      http.put("/sort-status", columnIds).catch((err) => console.log(err));
     }
-    if (active.data.current?.type === "item") {
+    if (active.data.current?.type === taskIdentifierKeyword) {
       const currentPosition = items.findIndex((item) => item.id === active.id);
       const targetPosition = items.findIndex((item) => item.id === over.id);
       if (currentPosition === targetPosition) return;
       setItems((prev) => arrayMove(prev, currentPosition, targetPosition));
+      const itemIds = arrayMove(items, currentPosition, targetPosition).map((item) =>
+        Number.parseInt(item.id.replace(taskIdentifierKeyword, ""))
+      );
+      http.put("/sort-tasks", itemIds).catch((err) => console.log(err));
       console.log("make api call items sort");
     }
   };
@@ -105,9 +106,10 @@ const App = () => {
     const { active, over } = event;
     if (!over) return;
     if (active.id === over.id) return;
-    if (active.data.current?.type === "column") return;
+    if (active.data.current?.type === columnIdentifierKeyword) return;
 
-    const targetColumnId = over.data.current?.type === "column" ? over.id : over.data.current?.sortable.containerId;
+    const targetColumnId =
+      over.data.current?.type === columnIdentifierKeyword ? over.id : over.data.current?.sortable.containerId;
     const currentColumnId = active.data.current?.sortable.containerId;
     if (targetColumnId === currentColumnId) return;
 
@@ -115,7 +117,14 @@ const App = () => {
     const index = dupItems.findIndex((item) => item.id === active.id);
     dupItems[index].columnId = targetColumnId;
     setItems(dupItems);
+
+    const itemData = {
+      title: dupItems[index].title,
+      status_id: Number.parseInt(dupItems[index].columnId.replace(columnIdentifierKeyword, "")),
+    };
+    const itemId = dupItems[index].id.replace(taskIdentifierKeyword, "");
     console.log("make api call item value edited");
+    http.put(`/task/${itemId}`, itemData).catch((err) => console.log(err));
   };
 
   return (
@@ -135,7 +144,13 @@ const App = () => {
           <SortableContext items={columns} id="main">
             {/* Columns Inside Board */}
             {columns.map((column) => (
-              <Column key={column.id} id={column.id} type="column" title={column.title} color={getColor(column.color)}>
+              <Column
+                key={column.id}
+                id={column.id}
+                type={columnIdentifierKeyword}
+                title={column.title}
+                color={getColor(column.color)}
+              >
                 <SortableContext items={items.filter((fitem) => fitem.columnId === column.id)} id={column.id}>
                   {items
                     .filter((fItem) => fItem.columnId === column.id)
@@ -143,7 +158,7 @@ const App = () => {
                       <Card
                         key={item.id}
                         id={item.id}
-                        type="item"
+                        type={taskIdentifierKeyword}
                         title={item.title}
                         color={getColor(column.color)}
                         content={item.content}
@@ -155,7 +170,7 @@ const App = () => {
           </SortableContext>
         </div>
         <DragOverlay>
-          {active.type === "column" ? (
+          {active.type === columnIdentifierKeyword ? (
             <Column
               id=""
               type=""
@@ -168,7 +183,7 @@ const App = () => {
                   <Card
                     key={item.id}
                     id={item.id}
-                    type="item"
+                    type={taskIdentifierKeyword}
                     title={item.title}
                     color={getColor(getActiveData().column?.color)}
                     content={item.content}
@@ -176,7 +191,7 @@ const App = () => {
                 ))}
             </Column>
           ) : null}
-          {active.type === "item" ? (
+          {active.type === taskIdentifierKeyword ? (
             <Card
               id=""
               type=""
