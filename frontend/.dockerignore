@@ -1,0 +1,7 @@
+node_modules
+dist
+.yarn
+.yarnrc.yml
+.git
+Dockerfile
+.dockerignore
