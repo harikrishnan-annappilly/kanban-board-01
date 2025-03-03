@@ -128,11 +128,44 @@ const App = () => {
   };
 
   const handleNewTask = (statuId: string) => {
+    const newTask = {
+      title: `Item ${Math.random().toString().slice(4, 7)}`,
+      status_id: Number.parseInt(statuId.replace(columnIdentifierKeyword, "")),
+    };
+    const newItem = {
+      ...newTask,
+      content: "this is being added will take time",
+      id: `${Math.random}`,
+      columnId: statuId,
+    };
+    setItems([...items, newItem]);
+
+    http
+      .post("/tasks", newTask)
+      .then((response) => {
+        const newItem = {
+          ...response.data,
+          id: `${taskIdentifierKeyword}${response.data.id}`,
+          columnId: `${columnIdentifierKeyword}${response.data.columnId}`,
+        };
+        setItems([...items, newItem]);
+      })
+      .catch((err) => console.log(err));
     console.log("new item added with status id:", Number.parseInt(statuId.replace(columnIdentifierKeyword, "")));
   };
 
   const handleNewStatus = () => {
     console.log("new status added");
+  };
+
+  const handleDeleteStatus = (taskId: string) => {
+    const oldItems = [...items];
+    const newItems = items.filter((item) => item.id !== taskId);
+    setItems(newItems);
+    http.delete(`task/${Number.parseInt(taskId.replace(taskIdentifierKeyword, ""))}`).catch((err) => {
+      console.log(err);
+      setItems(oldItems);
+    });
   };
 
   return (
@@ -171,6 +204,7 @@ const App = () => {
                         title={item.title}
                         color={getColor(column.color)}
                         content={item.content}
+                        onDelete={() => handleDeleteStatus(item.id)}
                       />
                     ))}
                 </SortableContext>
@@ -201,6 +235,7 @@ const App = () => {
                     title={item.title}
                     color={getColor(getActiveData().column?.color)}
                     content={item.content}
+                    onDelete={() => {}}
                   />
                 ))}
             </Column>
@@ -212,6 +247,7 @@ const App = () => {
               title={getActiveData().item?.title || "NA"}
               content={getActiveData().item?.content || "NA"}
               color={getColor(getActiveData().column?.color)}
+              onDelete={() => {}}
             />
           ) : null}
         </DragOverlay>
