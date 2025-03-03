@@ -11,7 +11,7 @@ interface PropType {
 
 const Card = (props: PropType) => {
   const { id, type, title, content, color } = props;
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({ id, data: { type } });
+  const { setNodeRef, listeners, transform, transition, isDragging } = useSortable({ id, data: { type } });
   const style = { transition, transform: CSS.Transform.toString(transform) };
 
   return (
@@ -22,9 +22,8 @@ const Card = (props: PropType) => {
     >
       {/* Card Heading */}
       <div
-        {...attributes}
         {...listeners}
-        className={`rounded-t font-semibold text-lg p-1 border-b border-gray-400 bg-${color}-300`}
+        className={`rounded-t font-semibold text-lg p-1 border-b border-gray-400 bg-${color}-300 hover:cursor-grab`}
       >
         {title}
       </div>

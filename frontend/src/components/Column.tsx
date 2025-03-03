@@ -8,11 +8,12 @@ interface PropType {
   title: string;
   color: string;
   children: React.ReactNode;
+  onAddNew?: () => void;
 }
 
 const Column = (props: PropType) => {
-  const { id, type, title, color, children } = props;
-  const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({ id, data: { type } });
+  const { id, type, title, color, children, onAddNew = () => console.log("button clicked") } = props;
+  const { setNodeRef, listeners, transform, transition, isDragging } = useSortable({ id, data: { type } });
   const style = { transition, transform: CSS.Transform.toString(transform) };
 
   return (
@@ -25,14 +26,21 @@ const Column = (props: PropType) => {
     >
       {/* Column Heading */}
       <div
-        {...attributes}
         {...listeners}
-        className={`text-center text-2xl p-3 font-semibold rounded-t border-b border-gray-400 bg-${color}-300`}
+        className={`flex justify-center rounded-t border-b border-gray-400 bg-${color}-300 hover:cursor-grab`}
       >
-        {title}
+        <div className="text-center text-2xl p-3 font-semibold">{title}</div>
       </div>
       {/* Column Body */}
-      <div className="grow flex flex-col p-3 gap-3 overflow-y-auto overflow-x-hidden bg-white rounded-b">
+      <div className="p-3 bg-white">
+        <button
+          className={`border-2 border-dashed text-gray-700 border-${color}-300 p-2 rounded w-full hover:cursor-pointer hover:text-gray-900 text-lg font-semibold hover:bg-${color}-300`}
+          onClick={onAddNew}
+        >
+          Add New
+        </button>
+      </div>
+      <div className="grow flex flex-col p-3 gap-3 overflow-y-auto overflow-x-hidden bg-white text-gray-900 rounded-b">
         {children}
       </div>
     </div>

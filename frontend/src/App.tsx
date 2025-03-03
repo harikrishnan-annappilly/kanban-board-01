@@ -127,6 +127,14 @@ const App = () => {
     http.put(`/task/${itemId}`, itemData).catch((err) => console.log(err));
   };
 
+  const handleNewTask = (statuId: string) => {
+    console.log("new item added with status id:", Number.parseInt(statuId.replace(columnIdentifierKeyword, "")));
+  };
+
+  const handleNewStatus = () => {
+    console.log("new status added");
+  };
+
   return (
     <div className="flex flex-col h-screen">
       <DndContext
@@ -150,6 +158,7 @@ const App = () => {
                 type={columnIdentifierKeyword}
                 title={column.title}
                 color={getColor(column.color)}
+                onAddNew={() => handleNewTask(column.id)}
               >
                 <SortableContext items={items.filter((fitem) => fitem.columnId === column.id)} id={column.id}>
                   {items
@@ -168,6 +177,11 @@ const App = () => {
               </Column>
             ))}
           </SortableContext>
+          <div className="bg-gray-300 border-2 border-gray-400 border-dashed flex flex-col items-center justify-center min-w-24 w-2xl">
+            <button className="text-5xl text-gray-600 cursor-pointer w-fit" onClick={handleNewStatus}>
+              +
+            </button>
+          </div>
         </div>
         <DragOverlay>
           {active.type === columnIdentifierKeyword ? (
